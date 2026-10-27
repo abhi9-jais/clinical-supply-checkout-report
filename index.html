@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clinical Supply Company — Shopify Checkout Research</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1c2430;
+    --muted: #5c6570;
+    --paper: #f3efe6;
+    --card: #fffdf9;
+    --line: #e2d9cc;
+    --green: #1b6b43;
+    --green-soft: #e7f3ec;
+    --red: #8d3b32;
+    --red-soft: #f8ece9;
+    --amber: #8a5a10;
+    --amber-soft: #f8f1dc;
+    --blue: #1d4e7a;
+    --blue-soft: #e8f1f8;
+    --shadow: 0 10px 30px rgba(28, 36, 48, .06);
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    color: var(--ink);
+    background: var(--paper);
+    font-family: "Source Sans 3", "Segoe UI", sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+  }
+  a { color: var(--blue); }
+  .wrap { width: min(1120px, calc(100% - 32px)); margin: 0 auto; }
+  header.cover { background: #172033; color: #f7f3ea; padding: 48px 0 40px; }
+  header.cover p { color: #d5d0c6; }
+  .kicker { letter-spacing: .08em; text-transform: uppercase; font-size: 12px; font-weight: 600; color: #d7b56a; }
+  h1, h2, h3, h4 { font-family: "Source Serif 4", Georgia, serif; line-height: 1.3; }
+  h1 { font-size: clamp(32px, 5vw, 46px); margin: 12px 0 16px; }
+  h2 { font-size: 30px; margin: 0 0 12px; }
+  h3 { font-size: 22px; margin: 28px 0 8px; }
+  h4 { font-size: 18px; margin: 18px 0 6px; }
+  .layout { display: grid; grid-template-columns: 250px 1fr; gap: 28px; padding: 28px 0 64px; }
+  nav.toc {
+    position: sticky; top: 16px; align-self: start;
+    background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px;
+    max-height: calc(100vh - 32px); overflow: auto;
+  }
+  nav.toc strong { display: block; font-size: 13px; margin-bottom: 8px; }
+  nav.toc a { display: block; color: var(--ink); text-decoration: none; font-size: 14px; padding: 5px 0; }
+  nav.toc a:hover { color: var(--green); }
+  main section {
+    background: var(--card); border: 1px solid var(--line); border-radius: 18px;
+    padding: 28px; margin-bottom: 18px; box-shadow: var(--shadow);
+  }
+  .lead { font-size: 18px; }
+  .grid-3, .grid-2 { display: grid; gap: 12px; }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .card { border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; background: #fff; }
+  .card.good { background: var(--green-soft); border-color: #b7dcc6; }
+  .card.warn { background: var(--amber-soft); border-color: #ead7a4; }
+  .card.bad { background: var(--red-soft); border-color: #efc7c1; }
+  .card.info { background: var(--blue-soft); border-color: #c5d8ea; }
+  .tag {
+    display: inline-block; border-radius: 999px; padding: 2px 8px; font-size: 12px; font-weight: 700;
+    margin-right: 6px; vertical-align: middle;
+  }
+  .tag.fact { background: var(--green-soft); color: var(--green); }
+  .tag.assume { background: var(--amber-soft); color: var(--amber); }
+  .tag.limit { background: var(--red-soft); color: var(--red); }
+  .tag.check { background: var(--blue-soft); color: var(--blue); }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 12px 0 6px; }
+  th, td { border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; padding: 10px 8px; }
+  th { background: #f7f4ee; font-weight: 700; }
+  .scroll { overflow-x: auto; }
+  .src { font-size: 13px; color: var(--muted); margin-top: 8px; }
+  .bar-row { display: grid; grid-template-columns: 210px 1fr 36px; gap: 8px; align-items: center; margin: 6px 0; font-size: 14px; }
+  .track { display: block; height: 12px; background: #efeae1; border-radius: 99px; overflow: hidden; }
+  .fill { display: block; height: 12px; border-radius: 99px; }
+  .a { background: #1d4e7a; }
+  .b { background: #1b6b43; }
+  .c { background: #8d3b32; }
+  svg.flow { width: 100%; height: auto; }
+  .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+  .swatch { width: 10px; height: 10px; border-radius: 99px; display: inline-block; margin-right: 6px; }
+  ol.steps { padding-left: 18px; }
+  ol.steps li { margin: 6px 0; }
+  .score { font-variant-numeric: tabular-nums; font-weight: 700; }
+  pre { background: #f7f4ee; padding: 12px 14px; border-radius: 10px; overflow: auto; }
+  footer.note { color: var(--muted); font-size: 13px; padding-bottom: 40px; }
+  @media (max-width: 900px) {
+    .layout, .grid-3, .grid-2 { grid-template-columns: 1fr; }
+    nav.toc { position: static; max-height: none; }
+    .bar-row { grid-template-columns: 1fr; }
+  }
+  @media print {
+    body { background: white; }
+    nav.toc { display: none; }
+    .layout { display: block; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+<header class="cover">
+  <div class="wrap">
+    <div class="kicker">Technical research report · October 27, 2026 · Clinical Supply Company · Advanced · Authorize.net</div>
+    <h1>Shopify native checkout and a custom checkout</h1>
+    <p class="lead">Clinical Supply Company is in Fairfield, Ohio. The shop is on Advanced at $399 USD per month, and card payments run through Authorize.net inside Shopify’s own checkout. Shopify Payments is not set up. Shipping, US sales tax, and discounts stay on that checkout. This report explains what can be replicated, and which architecture keeps a future Subscription app and Loyalty app working.</p>
+    <p>For developers, solution architects, and business stakeholders. This is not a build quotation. Hours, dates, and dollar figures are illustrative estimates.</p>
+  </div>
+</header>
+
+<div class="wrap layout">
+<nav class="toc">
+  <strong>Contents</strong>
+  <a href="#read">How to read this</a>
+  <a href="#summary">Executive summary</a>
+  <a href="#client">Clinical Supply Company</a>
+  <a href="#diff">1. Native vs custom</a>
+  <a href="#pros">2. Advantages and risks</a>
+  <a href="#features">3. Feature comparison</a>
+  <a href="#replicate">4. Can it be copied 100%?</a>
+  <a href="#subs">5. Subscription app</a>
+  <a href="#loyalty">6. Loyalty app</a>
+  <a href="#arch">7. Combined architecture</a>
+  <a href="#plans">8. Shopify plans</a>
+  <a href="#cost">9. Cost and timeline</a>
+  <a href="#score">10. Recommendation</a>
+  <a href="#roadmap">Roadmap</a>
+  <a href="#risks">Risks</a>
+  <a href="#sources">Sources</a>
+</nav>
+<main>
+
+<section id="read">
+  <h2>How to read this</h2>
+  <p>Every important claim is labeled, so a later build does not discover that a promised feature was never available.</p>
+  <p>
+    <span class="tag fact">Fact</span> Read from official Shopify documentation, a pricing page, or this shop’s admin on October 27, 2026.
+    <span class="tag assume">Estimate</span> Hours, cost, and timeline. Not a Shopify measurement.
+    <span class="tag limit">Limit</span> An official restriction. The architecture does not promise a way around it.
+    <span class="tag check">Confirm on the store</span> Must be verified on this shop with the gateway or the API. Documentation alone is not enough.
+  </p>
+</section>
+
+<section id="summary">
+  <h2>Executive summary</h2>
+  <div class="card good">
+    <h3>Recommendation</h3>
+    <p>Keep Shopify’s native checkout. Do not replace it. This store is on Advanced, so build Approach A: the Subscription app and the Loyalty app on top of that checkout. The checkout editor can set the logo, colors, font, and background. App blocks on the information, shipping, and payment steps are a Plus feature, so they are not in scope on this plan. A full copy of the payment page is not a supported path.</p>
+  </div>
+  <div class="grid-3">
+    <div class="card">
+      <h4>A 100% copy</h4>
+      <p><span class="tag limit">Limit</span> The payment form, step structure, tax engine, and fraud stack belong to Shopify. Rebuilding that page does not reproduce the same behavior. Shopify’s terms require Shopify Checkout for online-store sales.</p>
+    </div>
+    <div class="card">
+      <h4>What will still work later</h4>
+      <p><span class="tag fact">Fact</span> On Advanced: selling plans, subscription contracts, billing attempts, the customer-account portal, thank-you and order-status apps, order webhooks, and discount codes. A payment-step block and a Discount Function in a single-store custom app need Plus.</p>
+    </div>
+    <div class="card">
+      <h4>Recurring charges on Authorize.net</h4>
+      <p><span class="tag fact">Fact</span> Authorize.net is a supported gateway for third-party subscription apps. The customer enters the card on Shopify checkout. Renewals charge that vaulted method. Apple Pay and Google Pay are not documented for subscription checkout on this gateway. PayPal is the documented wallet.</p>
+    </div>
+  </div>
+
+  <h3>Scores for the three approaches</h3>
+  <p class="src">Scores are architectural judgment, not a Shopify benchmark. 10 is the best fit. Security, subscription compatibility, and “still works later” are weighted more heavily.</p>
+  <div class="legend">
+    <span><i class="swatch a"></i>A · Native checkout + apps</span>
+    <span><i class="swatch b"></i>B · Native + extensibility + apps</span>
+    <span><i class="swatch c"></i>C · Headless + custom checkout</span>
+  </div>
+  <div style="margin-top:14px">
+    <div class="bar-row"><span>Checkout flexibility</span><div class="track"><div class="fill a" style="width:40%"></div></div><span class="score">4</span></div>
+    <div class="bar-row"><span></span><div class="track"><div class="fill b" style="width:70%"></div></div><span class="score">7</span></div>
+    <div class="bar-row"><span></span><div class="track"><div class="fill c" style="width:90%"></div></div><span class="score">9</span></div>
+    <div class="bar-row"><span>Cost (higher is cheaper)</span><div class="track"><div class="fill a" style="width:80%"></div></div><span class="score">8</span></div>
+    <div class="bar-row"><span></span><div class="track"><div class="fill b" style="width:60%"></div></div><span class="score">6</span></div>
+    <div class="bar-row"><span></span><div class="track"><div class="fill c" style="width:20%"></div></div><span class="score">2</span></div>
+    <div class="bar-row"><span>Security</span><div class="track"><div class="fill a" style="width:90%"></div></div><span class="score">9</span></div>
+    <div class="bar-row"><span></span><div class="track"><div class="fill b" style="width:90%"></div></div><span class="score">9</span></div>
+    <div class="bar-row"><span></span><div class="track"><div class="fill c" style="width:30%"></div></div><span class="score">3</span></div>
+    <div class="bar-row"><span>Maintenance</span><div class="track"><div class="fill a" style="width:80%"></div></div><span class="score">8</span></div>
+    <div class="bar-row"><span></span><div class="track"><div class="fill b" style="width:80%"></div></div><span class="score">8</span></div>
+    <div class="bar-row"><span></span><div class="track"><div class="fill c" style="width:20%"></div></div><span class="score">2</span></div>
+    <div class="bar-row"><span>Subscription fit</span><div class="track"><div class="fill a" style="width:90%"></div></div><span class="score">9</span></div>
+    <div class="bar-row"><span></span><div class="track"><div class="fill b" style="width:90%"></div></div><span class="score">9</span></div>
+    <div class="bar-row"><span></span><div class="track"><div class="fill c" style="width:30%"></div></div><span class="score">3</span></div>
+    <div class="bar-row"><span>Loyalty fit</span><div class="track"><div class="fill a" style="width:70%"></div></div><span class="score">7</span></div>
+    <div class="bar-row"><span></span><div class="track"><div class="fill b" style="width:90%"></div></div><span class="score">9</span></div>
+    <div class="bar-row"><span></span><div class="track"><div class="fill c" style="width:50%"></div></div><span class="score">5</span></div>
+    <div class="bar-row"><span>Scalability</span><div class="track"><div class="fill a" style="width:80%"></div></div><span class="score">8</span></div>
+    <div class="bar-row"><span></span><div class="track"><div class="fill b" style="width:90%"></div></div><span class="score">9</span></div>
+    <div class="bar-row"><span></span><div class="track"><div class="fill c" style="width:40%"></div></div><span class="score">4</span></div>
+    <div class="bar-row"><span>Still works later</span><div class="track"><div class="fill a" style="width:90%"></div></div><span class="score">9</span></div>
+    <div class="bar-row"><span></span><div class="track"><div class="fill b" style="width:90%"></div></div><span class="score">9</span></div>
+    <div class="bar-row"><span></span><div class="track"><div class="fill c" style="width:20%"></div></div><span class="score">2</span></div>
+  </div>
+  <p><strong>Choose A for Clinical Supply Company.</strong> The shop is already on Advanced, and A is the architecture that plan can run. Both A and B keep native checkout. B adds app UI on the information, shipping, and payment steps, and that UI is Plus. Do not buy Plus only for a points box, and do not choose C.</p>
+</section>
+
+<section id="client">
+  <h2>This store: Clinical Supply Company</h2>
+  <p>These figures come from the shop admin on October 27, 2026: Plan, Payments, and General. The customer stays on Shopify’s native checkout. Authorize.net is the live card gateway. A separate payment page is not part of this design. Advanced does not unlock app blocks on the payment step. It does include checkout-editor branding, market-specific checkout, thank-you and account apps, and carrier-calculated shipping.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Admin field</th><th>What the shop shows</th></tr></thead>
+    <tbody>
+      <tr><td>Store</td><td>Clinical Supply Company</td></tr>
+      <tr><td>Contact</td><td>clinicalsupply@clinicalsupplycompany.com · (800) 468-0188</td></tr>
+      <tr><td>Address</td><td>7082 Office Park Drive, Fairfield, Ohio 45069, United States</td></tr>
+      <tr><td>Currency and region</td><td>US Dollar. Backup region United States. Markets control any other currency a customer sees.</td></tr>
+      <tr><td>Units and time</td><td>Imperial system. Default weight is the pound. Time zone is Eastern, GMT−05:00. Orders and the subscription billing clock use that zone.</td></tr>
+      <tr><td>Plan</td><td>Advanced, $399 USD per month. The public pricing card showed $299. Budget from the admin figure, $399.</td></tr>
+      <tr><td>Included on the plan card</td><td>15 staff members. Shopify Shipping label discount up to 87%. Local storefronts by market. The 87% is a label discount, not a checkout discount code.</td></tr>
+      <tr><td>Live gateway</td><td>Authorize.net. The Payments screen says 0.5% transaction fee, and that card rates are set by Authorize.net. Shown methods: Visa, Mastercard, American Express, Discover, and one additional method.</td></tr>
+      <tr><td>Rates that are not live</td><td>The plan card lists 2.5% + $0.30 online and 2.4% + $0.10 in person. Those match the Shopify Payments offer. Shopify Payments still says “Complete setup,” so those rates are not what this checkout charges today.</td></tr>
+      <tr><td>Other payment methods</td><td>The “More ways to pay” list is empty. No offline or custom method is configured.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="card warn">
+    <p>Do not read the plan card as the customer’s card rate. Authorize.net sets that rate, and it is not printed on these screens. Shopify’s own charge on this gateway is the 0.5% shown under Authorize.net. The public Advanced column lists 0.6%. This shop’s Payments screen is the number to use.</p>
+  </div>
+  <div class="grid-3">
+    <div class="card good">
+      <h4>Shipping is included</h4>
+      <p>Zones, flat rates, weight-based rates, price-based rates, local delivery, and pickup run in native checkout. The shop’s default weight is pounds, so carrier quotes should be checked against that unit. On a subscription order the customer chooses the method for the first shipment. Checkout also shows the method, transit time, and cost of later shipments. After the first delivery, recurring shipments default to the least expensive available method unless a subscription shipping profile says otherwise. Carrier-calculated shipping is included on Advanced. Connect the store’s UPS, USPS, or FedEx account and the live rate appears on this same checkout. Authorize.net does not have to be replaced for that. Flat rates still work if no carrier account is connected. The plan’s “up to 87% shipping discount” applies to Shopify Shipping labels, not to the rate the customer is quoted.</p>
+    </div>
+    <div class="card good">
+      <h4>Tax is included</h4>
+      <p>The store address is Fairfield, Ohio. Shopify checkout still calculates US sales tax from the customer’s shipping address, not from that street address alone. Authorize.net does not calculate tax. It charges the final total Shopify sends. Each renewal is a new Shopify order, so tax is calculated again for that address. A custom tax engine is not required. Currency on the order is USD.</p>
+    </div>
+    <div class="card good">
+      <h4>Discounts are included</h4>
+      <p>Discount codes and automatic discounts created in Shopify admin run at checkout. Shopify’s help center says automatic discounts can apply to subscription orders, so each renewal can receive the discount. A selling-plan discount stays in the contract price. A gift card is documented for the first payment only. Do not copy a one-time loyalty code onto the contract, or points will be spent on every renewal.</p>
+    </div>
+  </div>
+
+  <h3>What is official for Authorize.net subscriptions</h3>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Topic</th><th>On this store</th></tr></thead>
+    <tbody>
+      <tr><td>Gateway support</td><td><span class="tag fact">Fact</span> Authorize.net is on the supported list for third-party subscription apps, with Shopify Payments, PayPal Express, Adyen, and Stripe. Availability still depends on region and on Authorize.net’s own terms.</td></tr>
+      <tr><td>First purchase</td><td>The customer enters the card on native checkout. Shopify vaults the customer payment method. The app never receives the full card number.</td></tr>
+      <tr><td>Renewal</td><td>The app calls <code>subscriptionBillingAttemptCreate</code>. Shopify charges that vaulted method through Authorize.net and creates a new order. Shipping, tax, and any applicable automatic discount run again on that order.</td></tr>
+      <tr><td>Wallets</td><td><span class="tag limit">Limit</span> On Authorize.net, the documented subscription wallet is PayPal. Google Pay and Apple Pay are stated as not supported. Shop Pay, Apple Pay, and Google Pay for subscriptions are listed as Shopify Payments benefits. Do not put them in scope for subscription sales on this gateway.</td></tr>
+      <tr><td>Expired cards</td><td>Automatic card updates through the major US card networks are documented for Shopify Payments. On another supported gateway, the customer may need to enter a new card in their account. Confirm with Authorize.net whether account updater is enabled on this merchant account.</td></tr>
+      <tr><td>Plan</td><td><span class="tag fact">Fact</span> Admin shows Advanced at $399 USD per month, with 15 staff accounts and local storefronts by market. Checkout-step app UI, the Checkout Branding API, and Shopify Functions in a single-store custom app stay on Plus. Thank-you apps, the customer-account portal, the checkout editor, and market-specific checkout are available on this plan.</td></tr>
+      <tr><td>Shopify’s extra fee</td><td><span class="tag fact">Fact</span> The Payments screen shows 0.5% on Authorize.net. Formula: [(products − discounts) + tax + shipping] × 0.5%. That is on top of the card rate Authorize.net sets. Shopify does not return this fee when an order is refunded. The public pricing page lists 0.6% for Advanced, 1% for Grow, and 2% for Basic. Plus states 0.20%. For this shop, use 0.5%.</td></tr>
+      <tr><td>Draft orders</td><td>The help page that covers third-party subscription apps says subscriptions cannot be used with draft orders. Do not scope phone orders as subscription checkouts.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p><span class="tag check">Confirm on the store</span> After Authorize.net is connected, run this query once. <code>true</code> means Shopify considers the shop configured for subscriptions.</p>
+  <pre>shop { features { eligibleForSubscriptions } }</pre>
+  <p>Then complete one small subscription order in Authorize.net test mode. Both a subscription contract and a customer payment method should exist. That is the Phase 0 proof.</p>
+  <p class="src">Sources: Clinical Supply Company admin, Plan, Payments, and General, October 27, 2026. <a href="https://help.shopify.com/en/manual/products/purchase-options/subscriptions/considerations">Subscription products, gateways, shipping, discounts</a>, <a href="https://help.shopify.com/en/manual/payments/accelerated-checkouts/apple-pay">Apple Pay subscriptions require Shopify Payments</a>, <a href="https://help.shopify.com/en/manual/your-account/manage-billing/billing-charges/types-of-charges/third-party-charges/third-party-transaction-fees">Third-party transaction fees</a>, <a href="https://www.shopify.com/pricing">US pricing page, which lists 0.6% for Advanced</a>, <a href="https://www.shopify.com/plus/pricing">Plus 0.20%</a>, <a href="https://help.shopify.com/en/manual/fulfillment/setup/shipping-rates/third-party-carrier-calculated-shipping/carrier-accounts">Carrier-calculated shipping on Advanced</a>.</p>
+</section>
+
+<section id="diff">
+  <h2>1. Native checkout and a custom checkout</h2>
+  <h3>How native checkout works</h3>
+  <p><span class="tag fact">Fact</span> The customer fills a cart. The theme or storefront sends them to Shopify’s hosted checkout URL. The current path is the Cart API <code>checkoutUrl</code>. <code>checkoutCreate</code> is not supported in current API versions. On checkout, Shopify handles the address, shipping, tax, discounts, payment, and the order. Inventory, analytics, and the customer record land in Shopify admin when the order is created.</p>
+  <p><span class="tag fact">Fact</span> Shopify’s terms require Shopify Checkout for sales associated with the online store. That covers a theme storefront and a storefront built on the Storefront API. A headless storefront still sends payment to that hosted checkout. Checkout Sheet Kit opens the same Shopify checkout in a sheet for mobile apps. It is not a separate payment form.</p>
+
+  <h3>How a custom checkout would work</h3>
+  <p>A custom checkout is a page the team owns: its own address form, its own shipping list, its own payment widget, then an order created through the Admin API. Card data would pass through that page or through a direct gateway integration. Shopify’s tax engine, fraud tools, and payment-method vault do not run on that page by themselves.</p>
+
+  <h3>Customizing checkout is not the same as replacing it</h3>
+  <div class="scroll">
+  <table>
+    <thead><tr><th></th><th>Customize — Checkout Extensibility</th><th>Replace — a separate checkout page</th></tr></thead>
+    <tbody>
+      <tr><td>Who owns the page</td><td>Shopify</td><td>The project team</td></tr>
+      <tr><td>Where UI is added</td><td>Shopify targets and Polaris web components</td><td>The full page</td></tr>
+      <tr><td>Card data</td><td>Stays with Shopify. An extension cannot read the card number</td><td>PCI scope moves to the team</td></tr>
+      <tr><td>Wallets</td><td>Remain on the same checkout, where the gateway supports them</td><td>Each wallet is a separate integration</td></tr>
+      <tr><td>Subscription contract</td><td>Shopify creates the contract when a selling-plan line is purchased</td><td>A vaulted payment method is not created unless checkout is Shopify’s</td></tr>
+      <tr><td>App Store / terms</td><td>Supported</td><td>Outside the terms for online-store sales</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="src">Sources: <a href="https://www.shopify.com/legal/terms">Shopify Terms</a>, <a href="https://shopify.dev/docs/apps/build/checkout/technologies">Checkout technologies</a>, <a href="https://github.com/Shopify/storefront-api-feedback/discussions/225">Cart API transition</a>, <a href="https://shopify.dev/docs/apps/build/purchase-options/subscriptions/model-subscriptions-solution">Subscription lifecycle</a>.</p>
+
+  <h3>What can be replicated</h3>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Piece</th><th>Inside native checkout</th><th>On a separate page</th></tr></thead>
+    <tbody>
+      <tr><td>Logo, colors, font, background</td><td>Yes. Checkout and accounts editor, Basic and above</td><td>Yes, but the payment stack is still custom</td></tr>
+      <tr><td>Deeper branding, such as corner radius</td><td>Checkout Branding API, Plus only</td><td>Yes</td></tr>
+      <tr><td>Extra blocks: points, message, field</td><td>Thank-you and order status: Basic and above. Information, shipping, and payment steps: Plus</td><td>Yes</td></tr>
+      <tr><td>Discount, shipping, and payment rules</td><td>Shopify Functions. Public app: plans except Starter. Custom app: Plus</td><td>Must be written by the team</td></tr>
+      <tr><td>Payment form, 3-D Secure, Shop Pay UI</td><td>Shopify’s. An extension does not replace them</td><td>A clone is not Shopify checkout</td></tr>
+      <tr><td>Removing steps, moving the order summary, injecting custom HTML or JavaScript</td><td>No. Component CSS cannot be overridden, and arbitrary HTML cannot be rendered</td><td>Technically possible, and not a supported commerce path</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="src">Sources: <a href="https://help.shopify.com/en/manual/checkout-settings/customize-checkout-configurations">Checkout editor</a>, <a href="https://shopify.dev/docs/api/checkout-ui-extensions/latest">Checkout UI extensions</a>, <a href="https://shopify.dev/docs/api/checkout-ui-extensions/latest/web-components">Web components constraints</a>, <a href="https://shopify.dev/docs/api/functions/latest">Function APIs</a>.</p>
+</section>
+
+<section id="pros">
+  <h2>2. Advantages, disadvantages, and risk</h2>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Area</th><th>Native Shopify Checkout</th><th>Custom checkout</th></tr></thead>
+    <tbody>
+      <tr><td>Security</td><td>Shopify states that it is Level 1 PCI DSS compliant, and that stores powered by Shopify are PCI compliant by default. Extensions run in a sandbox and cannot reach payment fields.</td><td>The moment a card number passes through the team’s page or server, PCI scope belongs to the team. Audit, vaulting, and incident response become separate work.</td></tr>
+      <tr><td>Payment processing</td><td>Authorize.net charges the total inside Shopify checkout. This shop’s Payments screen adds Shopify’s 0.5% fee. The 2.5% + $0.30 rate on the plan card is the Shopify Payments rate, and that setup is not complete.</td><td>Every method, refund, partial capture, and 3-D Secure flow is custom. The Shopify vault used for subscriptions is not created.</td></tr>
+      <tr><td>Shipping</td><td>Delivery profiles, local delivery, and pickup. This store is on Advanced, so carrier-calculated UPS, USPS, and FedEx rates are included once that carrier account is connected.</td><td>Carrier APIs, serviceability, and rate cache are custom. Shopify delivery profiles do not apply on their own.</td></tr>
+      <tr><td>Taxes</td><td>Shopify checkout calculates US sales tax, then Authorize.net charges that total. The gateway does not calculate tax.</td><td>US sales tax, nexus, and tax on shipping are custom. An incorrect tax amount is a legal risk.</td></tr>
+      <tr><td>Discounts</td><td>Codes, automatic discounts, gift cards, and Functions. Shopify decides which discounts combine.</td><td>The stacking engine is custom, including gift-card liability and single-use codes.</td></tr>
+      <tr><td>Order management</td><td>Order, refund, cancel, inventory, and customer live in one admin.</td><td>An order can be created through the Admin API. Checkout side effects such as reservation, fraud review, and analytics do not arrive on their own.</td></tr>
+      <tr><td>Performance</td><td>Shopify hosts checkout. Extension code runs in a web worker. Custom JavaScript does not run on the parent page.</td><td>Hosting and third-party calls belong to the team. One slow tax API can stop checkout.</td></tr>
+      <tr><td>Conversion</td><td>Shopify’s published claim is that its checkout converts about 15% better on average than other platforms. The Shop Pay claim is up to 50% better than guest checkout. Those are Shopify’s own figures, not an independent audit. Shop Pay, Apple Pay, and Google Pay for subscriptions are listed under Shopify Payments. On Authorize.net, the documented subscription wallet is PayPal. Do not budget the Shop Pay claim against subscription sales on this gateway.</td><td>The funnel is the team’s. Shopify’s checkout investment does not land on that page.</td></tr>
+      <tr><td>Other apps</td><td>Checkout apps, pixels, discounts, and subscriptions attach to this page.</td><td>App Store checkout apps do not run on a replacement page.</td></tr>
+      <tr><td>Build cost</td><td>Branding and apps. The payment stack is not rewritten.</td><td>Checkout itself becomes a product. Ranges are in section 9.</td></tr>
+      <tr><td>Maintenance</td><td>Shopify upgrades checkout. Extensions are written against APIs, not DOM selectors.</td><td>Each new payment rule, tax change, and browser change is a release.</td></tr>
+      <tr><td>API limits</td><td>UI only at defined targets. Functions have no network access by default.</td><td>Storefront checkout creation is closed. Creating an order does not produce a subscription vault.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="src">Sources: <a href="https://www.shopify.com/pricing">Shopify pricing, PCI and conversion claim</a>, <a href="https://www.shopify.com/partners/blog/checkout-compliance">Checkout sandbox, 2025</a>, <a href="https://www.shopify.com/enterprise/blog/checkout-extensibility-winter-editions">Shop Pay claim</a>.</p>
+
+  <h3>Retired tools. Do not treat these as the current solution</h3>
+  <ul>
+    <li><code>checkout.liquid</code> is unsupported on the information, shipping, and payment steps. It was sunset for Thank you and Order status pages on August 28, 2025.</li>
+    <li>Shopify Scripts stopped executing on June 30, 2026. The replacement is Shopify Functions.</li>
+    <li>Storefront <code>checkoutCreate</code> is replaced by the Cart API and <code>checkoutUrl</code>.</li>
+    <li>Additional scripts and script tags on the Thank you page have been sunset. Tracking uses web pixel extensions.</li>
+  </ul>
+  <p class="src">Sources: <a href="https://shopify.dev/docs/storefronts/themes/architecture/layouts/checkout-liquid/index">checkout.liquid</a>, <a href="https://shopify.dev/changelog/shopify-scripts-will-be-deprecated-on-june-30-2026">Scripts deprecation</a>.</p>
+</section>
+
+<section id="features">
+  <h2>3. Feature comparison</h2>
+  <p>Complexity assumes a team that already builds Shopify apps. <span class="tag assume">Estimate</span> Low is about 1–3 weeks, medium is 3–8 weeks, high is about a quarter, and very high is half a year or more, for one dedicated pair. This is not a quote. Where the Plus column says yes, that capability is not on this Advanced store unless the shop upgrades.</p>
+  <div class="scroll">
+  <table>
+    <thead>
+      <tr><th>Feature</th><th>Native checkout</th><th>Custom checkout</th><th>APIs</th><th>Plus required?</th><th>Complexity</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Customer information and address</td>
+        <td>Shopify’s form, autocomplete, and validation. An extension can suggest an address. It does not replace the form.</td>
+        <td>The full form is custom. A provider such as Google or Loqate is a separate contract.</td>
+        <td>Checkout UI address targets. Customer Admin API after the order.</td>
+        <td>Address UI on the information or payment step: Plus. The native form: all plans.</td>
+        <td>Native: low. Custom: high.</td>
+      </tr>
+      <tr>
+        <td>Shipping methods and delivery estimates</td>
+        <td>Zones, profiles, pickup, and local delivery. Functions can rename, reorder, or hide options.</td>
+        <td>Rates are custom. Estimate accuracy is the team’s.</td>
+        <td>Delivery customization Function. Carrier service where the plan allows it.</td>
+        <td>Public Function app: yes on Advanced. Custom Function app: Plus, so not on this store. Carrier-calculated rates: included on Advanced.</td>
+        <td>Native: low. Custom: high.</td>
+      </tr>
+      <tr>
+        <td>Payment gateways and methods</td>
+        <td>Shopify’s payment step. This store’s card processor is Authorize.net. The card form stays on Shopify’s page.</td>
+        <td>Each method needs its own SDK. Authorize.net’s Shopify vault and the subscription contract are not created on that page.</td>
+        <td>Payment apps inside Shopify checkout. Order transactions in the Admin API.</td>
+        <td>A custom payment-customization Function: Plus. Native methods: all plans.</td>
+        <td>Native: low. Custom: very high.</td>
+      </tr>
+      <tr>
+        <td>Discount codes and automatic discounts</td>
+        <td>Admin discounts. A code can be applied on the cart. Checkout decides which discounts combine.</td>
+        <td>The engine has to be written, or codes never reach a total.</td>
+        <td><code>discountCodeBasicCreate</code>, cart discount update, automatic discounts.</td>
+        <td>No.</td>
+        <td>Native: low. Custom: high.</td>
+      </tr>
+      <tr>
+        <td>BOGO, bundles, volume</td>
+        <td>Native discounts and Discount Functions. A bundle of different products is not supported as one subscription. The Shopify Subscriptions app is documented as incompatible with bundles.</td>
+        <td>Any rule can be coded, and tax plus the renewal price become custom.</td>
+        <td>Discount Function APIs. Selling-plan pricing policy for the subscription discount.</td>
+        <td>Functions: public app, or a Plus custom app.</td>
+        <td>Medium. Do not promise bundle-plus-subscription.</td>
+      </tr>
+      <tr>
+        <td>Taxes and shipping calculation</td>
+        <td>Shopify checkout calculates the shipping rate and US sales tax. Authorize.net charges that total.</td>
+        <td>Shipping rate and US sales tax are custom.</td>
+        <td>Calculation stays inside Shopify checkout. Draft-order calculation is a different flow.</td>
+        <td>Native tax: all plans. Market-specific checkout: Advanced.</td>
+        <td>Native: low. Custom: very high.</td>
+      </tr>
+      <tr>
+        <td>Gift cards</td>
+        <td>Applied at checkout. Documented as applying to the first subscription payment only.</td>
+        <td>Issuance, balance, fraud, and liability are custom.</td>
+        <td>Gift Card APIs. <code>shop.features.giftCards</code>.</td>
+        <td>No.</td>
+        <td>Native: low. Do not treat a gift card as the renewal payment method.</td>
+      </tr>
+      <tr>
+        <td>Loyalty rewards</td>
+        <td>Cart widget on all plans. A block on the checkout steps: Plus. A discount code on all plans. A Discount Function: public app, or Plus.</td>
+        <td>The UI is freer. The discount engine and renewal orders still have to award points.</td>
+        <td>Webhooks, customer metafields, Discount APIs, Customer Account UI.</td>
+        <td>In-checkout block: Plus. Earn and redeem with a discount code: no.</td>
+        <td>Medium.</td>
+      </tr>
+      <tr>
+        <td>Upsells and cross-sells</td>
+        <td>Cart and product page on all plans. An app in the checkout order summary: Plus. Post-purchase extensions exist on paid plans, require Shopify access on a live store, and are documented as beta.</td>
+        <td>UI can go anywhere. An offer after payment is not the same protected post-purchase page.</td>
+        <td>Checkout UI, post-purchase extension.</td>
+        <td>Inside checkout: Plus. Post-purchase: access request.</td>
+        <td>Medium. Do not put post-purchase on the critical path until access is granted.</td>
+      </tr>
+      <tr>
+        <td>Checkout UI customization</td>
+        <td>Logo, colors, font, and background: Basic and above. Branding API and checkout-step apps: Plus. Arbitrary HTML or CSS: no.</td>
+        <td>The full UI. That is the real advantage of a replacement page.</td>
+        <td>Checkout editor, Checkout Branding API, UI extensions.</td>
+        <td>Deeper visual control: Plus.</td>
+        <td>Native branding: low. A full clone: very high.</td>
+      </tr>
+      <tr>
+        <td>Customer accounts</td>
+        <td>New customer accounts. UI extensions on account pages: Basic and above. Payment-method updates belong here, so the vault stays with Shopify.</td>
+        <td>A separate login. Collecting a new card brings PCI and gateway work back.</td>
+        <td>Customer Account UI extensions. Customer Admin API.</td>
+        <td>Plus is not required for account pages.</td>
+        <td>Medium.</td>
+      </tr>
+      <tr>
+        <td>Order create, refund, cancel</td>
+        <td>Checkout creates the order. Refund and cancel use admin or the Admin API. The Order Edits API is documented as not supporting subscriptions.</td>
+        <td>Order creation is possible. The contract and the vault are not.</td>
+        <td>Orders and Refunds. A successful billing attempt creates the renewal order.</td>
+        <td>No.</td>
+        <td>Native: low. Do not sell subscription order editing.</td>
+      </tr>
+      <tr>
+        <td>Inventory sync</td>
+        <td>Shopify reserves stock at checkout and decrements it on the order.</td>
+        <td>Race conditions are custom. Overselling is the risk.</td>
+        <td>Inventory levels, <code>orders/paid</code>.</td>
+        <td>No.</td>
+        <td>Native: low. Custom: high.</td>
+      </tr>
+      <tr>
+        <td>Analytics and conversion tracking</td>
+        <td>Shopify analytics and web pixels. Pixels are available on plans except Starter.</td>
+        <td>A separate funnel. Shopify’s checkout reports stay empty.</td>
+        <td>Web pixel extensions.</td>
+        <td>No.</td>
+        <td>Low.</td>
+      </tr>
+      <tr>
+        <td>Fraud and payment security</td>
+        <td>Built-in fraud analysis on the pricing page is marked as requiring Shopify Payments. Checking the origin order’s risk before a billing attempt is documented. Authorize.net’s own fraud tools still apply to the charge.</td>
+        <td>Gateway fraud, chargebacks, and PCI belong to the team.</td>
+        <td>Order risk. The gateway’s own tools.</td>
+        <td>No.</td>
+        <td>Native: low. Custom: very high.</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section id="replicate">
+  <h2>4. Copying Shopify checkout at 100%</h2>
+  <div class="card bad">
+    <p><span class="tag limit">Limit</span> A 100% copy is not possible. The pixels, payment behavior, tax, fraud checks, and future Shopify features cannot be reproduced together on a page the team hosts. The part Shopify owns is not exported as a public “full checkout” API.</p>
+  </div>
+  <h3>Feasibility split</h3>
+  <p class="src"><span class="tag assume">Estimate</span> The bars below are not a measured study. They are this report’s split of who controls each part of checkout.</p>
+  <div class="bar-row"><span>Stays with Shopify</span><div class="track"><div class="fill c" style="width:45%"></div></div><span>45</span></div>
+  <div class="bar-row"><span>Added by extensibility</span><div class="track"><div class="fill b" style="width:40%"></div></div><span>40</span></div>
+  <div class="bar-row"><span>Theme and cart, all plans</span><div class="track"><div class="fill a" style="width:15%"></div></div><span>15</span></div>
+  <p>Stays with Shopify: card fields, the 3-D Secure challenge, checkout step order, the position of the order summary, core CSS, and the PCI boundary.</p>
+  <p>Added by extensibility: branding, app blocks, discount, delivery, and payment rules, extra fields, validation, thank-you, and customer accounts.</p>
+  <p>Available on all plans, before checkout: the product page, the cart, the selling-plan picker, the loyalty balance, applying a discount code, then <code>checkoutUrl</code>.</p>
+
+  <h3>Each technology, and its limit</h3>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Technology</th><th>What it does</th><th>Who can use it</th><th>Limit</th></tr></thead>
+    <tbody>
+      <tr><td>Checkout UI extensions</td><td>Polaris components on checkout and thank-you</td><td>Checkout steps: Plus. Thank you and order status: plans except Starter</td><td>Sandbox. No card data. No arbitrary HTML. No CSS override. A merchant can place up to three extensions on the same block target.</td></tr>
+      <tr><td>Checkout Branding API</td><td>Visual tokens: color, typography, radius</td><td>Plus</td><td>Does not change layout.</td></tr>
+      <tr><td>Shopify Functions</td><td>Backend logic for discounts, delivery, payment, and validation</td><td>Public App Store app: plans except Starter. Custom app: Plus. Some Function APIs are in feature preview</td><td>No outbound API call by default. Network access is documented mainly for Shopify for enterprises, after Shopify enables it. Input size and execution time are limited.</td></tr>
+      <tr><td>Web pixels</td><td>Behavioral events</td><td>Plans except Starter</td><td>Not a checkout redesign.</td></tr>
+      <tr><td>Storefront Cart API</td><td>Cart, lines, selling plan id, discount codes, <code>checkoutUrl</code></td><td>A storefront with a Storefront API token</td><td>Does not complete checkout. The customer must be sent to Shopify’s URL.</td></tr>
+      <tr><td>Admin GraphQL</td><td>Products, discounts, orders, contracts, metafields</td><td>According to app scopes</td><td>Does not render the checkout page.</td></tr>
+      <tr><td>Customer Account extensions</td><td>Portal for orders, subscriptions, and points</td><td>Basic and above</td><td>Not the checkout payment step.</td></tr>
+      <tr><td>Post-purchase extensions</td><td>An offer after payment and before thank-you</td><td>Plans except Starter. Open on a dev store. Access request on a live store. Documented as beta</td><td>Adding a new subscription to an order that already has one is documented as not allowed.</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="src">Sources: <a href="https://shopify.dev/docs/apps/build/checkout/technologies">Technologies</a>, <a href="https://shopify.dev/docs/api/checkout-extensions">Checkout app extensions</a>, <a href="https://shopify.dev/docs/apps/build/functions/network-access">Function network access</a>, <a href="https://shopify.dev/docs/apps/build/checkout/capabilities">Extension capabilities</a>.</p>
+</section>
+
+<section id="subs">
+  <h2>5. Future Subscription app</h2>
+  <p>Native checkout is the architecture this app needs. A custom checkout removes the saved payment method, which is the hard part of recurring billing.</p>
+  <h3>Official lifecycle</h3>
+  <ol class="steps">
+    <li>The app is created from the Dev Dashboard. A custom app created inside the Shopify admin cannot use the protected subscription scopes or extensions.</li>
+    <li>Most subscription apps must request API access in the Partner Dashboard. Access is not automatic.</li>
+    <li>The app writes a <code>SellingPlanGroup</code> and <code>SellingPlan</code> on a product or variant.</li>
+    <li>The theme lets the customer choose a plan. The cart line carries the variant id and the selling plan id.</li>
+    <li>Shopify checkout handles price, messaging, consent, and payment-method vaulting.</li>
+    <li>After purchase, Shopify creates the subscription contract. The contract is detached from the original plan. Editing the plan later does not change existing contracts.</li>
+    <li>On later cycles the app calls <code>subscriptionBillingAttemptCreate</code>. Success creates a new order. Failure returns an error. A 3-D Secure challenge can return a <code>nextActionUrl</code>.</li>
+    <li>The customer portal lives on customer accounts. Pause, cancel, and payment-method updates go through the contract APIs from there.</li>
+  </ol>
+  <p class="src">Sources: <a href="https://shopify.dev/docs/apps/build/purchase-options/subscriptions/model-subscriptions-solution">Model a subscriptions solution</a>, <a href="https://shopify.dev/docs/apps/build/purchase-options/subscriptions/selling-plans/build-a-selling-plan">Build a selling plan</a>, <a href="https://shopify.dev/docs/apps/build/purchase-options/subscriptions/contracts/build-a-subscription-contract">Build a subscription contract</a>.</p>
+
+  <h3>Where each feature works</h3>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Feature</th><th>Native checkout + app</th><th>Custom checkout</th></tr></thead>
+    <tbody>
+      <tr><td>Create a subscription</td><td>Shopify creates the contract after checkout</td><td>A contract can exist without a vaulted method. A recurring card charge does not</td></tr>
+      <tr><td>Selling plans</td><td>Admin API, displayed in the theme</td><td>The same plans, with the purchase path broken</td></tr>
+      <tr><td>Recurring billing</td><td><code>subscriptionBillingAttemptCreate</code>, with an idempotency key</td><td>No Shopify vault. Storing the card is PCI scope</td></tr>
+      <tr><td>Subscription discount</td><td>The selling-plan pricing policy stays in the contract price, so renewals keep it</td><td>A separate price book</td></tr>
+      <tr><td>Retries</td><td>The app’s scheduler. A new attempt and a new idempotency key after a failure webhook</td><td>The gateway’s own retry, not tied to a Shopify subscription order</td></tr>
+      <tr><td>Pause, cancel</td><td>Contract status mutations</td><td>Only if a contract exists</td></tr>
+      <tr><td>Skip, reschedule</td><td>Billing-cycle APIs. The app sets the next date</td><td>The same APIs, and meaningless without a contract</td></tr>
+      <tr><td>Product swap</td><td>Update contract lines, then calculate and commit</td><td>The same API, and the same dependency</td></tr>
+      <tr><td>Customer portal</td><td>Customer account UI extension. Shopify shows the card. The app does not see the PAN</td><td>A portal that collects cards is PCI scope</td></tr>
+      <tr><td>Renewal orders</td><td>A successful billing attempt creates an order. Inventory and loyalty webhooks run on that order</td><td>An order the team creates is not a Shopify subscription order</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>This store’s gateway: Authorize.net</h3>
+  <p>The full table is in “This store: Clinical Supply Company.” In short: Authorize.net is the live gateway and is supported for third-party subscription apps. The recurring charge uses the card vaulted during Shopify checkout. Shopify calculates shipping, US sales tax, and automatic discounts on every renewal order, then adds the 0.5% fee shown in Payments. Authorize.net charges the card total at its own card rate.</p>
+  <p><span class="tag check">Confirm on the store</span> After the gateway is connected, <code>shop.features.eligibleForSubscriptions</code> should be true, and a test subscription should produce both a contract and a customer payment method.</p>
+  <div class="card info">
+    <h4>How the charge moves</h4>
+    <p>On the first purchase and on every renewal, Shopify sends the amount to Authorize.net. The amount includes the product, the selling-plan price, discounts, shipping, and tax. The app does not calculate tax or shipping itself. Shopify then bills the 0.5% shown in this shop’s Payments settings. Authorize.net’s card percentage is separate and is not on the admin screen. When a card expires, the customer updates the payment method in their account. Automatic card updater is documented for Shopify Payments, which is not active here. Confirm it separately on the Authorize.net merchant account.</p>
+  </div>
+  <p><span class="tag fact">Fact</span> Limits from the help page for third-party subscription apps. Do not write these into scope as features:</p>
+  <ul>
+    <li>A gift card applies to the first payment only.</li>
+    <li>Bundles are not compatible with the Shopify Subscriptions app. Developer docs also say subscriptions made of different products are not supported.</li>
+    <li>The Order Edits API does not support subscriptions.</li>
+    <li>Automatic discounts can apply to subscription orders. Do not copy a one-time loyalty code onto the contract.</li>
+    <li>The help page says the customer is billed the day after the subscription is due, at 10:00 a.m. in the store’s local time. This shop is set to Eastern Time, so that clock is 10:00 a.m. Eastern. The app creates the billing attempt. Confirm the actual charge time on the first renewal in a dev store.</li>
+    <li>Subscriptions are documented as not supported on draft orders.</li>
+    <li>Google Pay and Apple Pay are not subscription wallets on Authorize.net. PayPal is the documented wallet.</li>
+  </ul>
+  <p class="src">Sources: <a href="https://help.shopify.com/en/manual/products/purchase-options/subscriptions/considerations">Subscription gateways, shipping, discounts</a>, <a href="https://shopify.dev/docs/api/admin-graphql/2026-10/objects/ShopFeatures">ShopFeatures</a>, <a href="https://shopify.dev/docs/apps/build/purchase-options/subscriptions/migrate-to-subscriptions-api">eligibleForSubscriptions</a>.</p>
+</section>
+
+<section id="loyalty">
+  <h2>6. Future Loyalty app</h2>
+  <p>Loyalty does not replace checkout. Points are earned from webhooks. Points are spent as a discount. On this Advanced store the balance is shown on the cart and in the account. A block on the payment step is Plus, so it is not part of the current build.</p>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Feature</th><th>Where it runs</th><th>Tool</th><th>Plan</th></tr></thead>
+    <tbody>
+      <tr><td>Earn points</td><td>After the order is paid</td><td><code>orders/paid</code>. A renewal is also an order, so subscription rewards use the same pipeline</td><td>All plans</td></tr>
+      <tr><td>Reverse points</td><td>Refund or cancel</td><td><code>refunds/create</code>, <code>orders/cancelled</code>. A partial refund reverses a partial balance. The rule belongs to the app</td><td>All plans</td></tr>
+      <tr><td>Balance</td><td>The app database is the source of truth. A customer metafield is the copy checkout can read</td><td>Admin metafields, written before the customer reaches checkout</td><td>All plans</td></tr>
+      <tr><td>Redeem, not Plus</td><td>On the cart, before checkout</td><td>One customer-bound discount code. Cart Ajax or the Storefront cart discount update. Usage limit 1</td><td>Plus is not required</td></tr>
+      <tr><td>Redeem, Plus or a public app</td><td>Inside checkout calculation</td><td>Discount Function. The function reads the metafield. It does not make a live HTTP call by default</td><td>Public app: paid plans. A single-store custom app: Plus</td></tr>
+      <tr><td>Show the balance on the payment step</td><td>Payment step</td><td>Checkout UI extension. Optional <code>network_access</code>. The reliable path is the metafield</td><td>Plus</td></tr>
+      <tr><td>Balance on thank-you and the account</td><td>After checkout, and in the portal</td><td>UI extensions</td><td>Basic and above</td></tr>
+      <tr><td>Cashback</td><td>A discount on the next order. Store credit only if that API is open on this shop</td><td>Start with a discount code or a Function. This report does not treat store credit as a guaranteed channel</td><td>Same as the discount path above</td></tr>
+      <tr><td>Referral</td><td>A code on the account page. The reward fires on the friend’s paid order</td><td>Discount code plus <code>orders/paid</code></td><td>All plans</td></tr>
+      <tr><td>VIP tiers</td><td>A customer metafield or tag drives the earn rate and the discount</td><td>A metafield. If a Function is used, the tier is in its input</td><td>Metafields: all plans</td></tr>
+      <tr><td>Expiry</td><td>A nightly job in the app, then a metafield update</td><td>The app’s scheduler. Shopify does not expire points</td><td>All plans</td></tr>
+      <tr><td>Subscription rewards</td><td>The first order and each renewal can use different rules</td><td>Read the selling-plan property on the order. Do not write a one-time redemption onto the contract</td><td>All plans</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="card info">
+    <h4>Functions and network access</h4>
+    <p><span class="tag fact">Fact</span> Network access for Discount Functions is documented for custom apps on Shopify for enterprises, and Shopify has to enable it. Do not design the loyalty discount to call the app’s API during checkout. Write the balance to the metafield when the order is processed. Network access for a checkout UI extension is separate: it is requested in the Partner Dashboard, and the docs say the approval is automatic. Shopify still describes the metafield as the faster and more reliable path. Take the discount amount from the metafield. Keep UI network access optional.</p>
+  </div>
+  <p class="src">Sources: <a href="https://shopify.dev/docs/apps/build/functions/network-access">Function network access</a>, <a href="https://shopify.dev/docs/apps/build/checkout/capabilities">Checkout network access, loyalty example</a>, <a href="https://help.shopify.com/en/manual/checkout-settings/customize-checkout-configurations/checkout-apps">Apps by plan</a>.</p>
+</section>
+
+<section id="arch">
+  <h2>7. Combined architecture</h2>
+  <p>One store, one native checkout, two apps. Both apps listen to order webhooks. Both write customer metafields. A discount enters checkout from one place, so the same reward is not applied twice.</p>
+
+  <svg class="flow" viewBox="0 0 1040 520" role="img" aria-labelledby="flowTitle flowDesc">
+    <title id="flowTitle">Data flow for subscriptions and loyalty on native checkout</title>
+    <desc id="flowDesc">From the product page and cart, through Shopify checkout, to the order and contract, then webhooks to both apps. A renewal billing attempt creates the next order.</desc>
+    <rect width="1040" height="520" fill="#fffdf9"/>
+    <g font-family="Source Sans 3, sans-serif" font-size="14" fill="#1c2430">
+      <rect x="20" y="30" width="200" height="70" rx="12" fill="#e8f1f8" stroke="#1d4e7a"/>
+      <text x="120" y="60" text-anchor="middle">Product and cart</text>
+      <text x="120" y="80" text-anchor="middle" font-size="12" fill="#5c6570">plan + points widget</text>
+      <rect x="280" y="30" width="220" height="70" rx="12" fill="#e7f3ec" stroke="#1b6b43"/>
+      <text x="390" y="60" text-anchor="middle">Shopify Checkout</text>
+      <text x="390" y="80" text-anchor="middle" font-size="12" fill="#5c6570">tax, pay, vault</text>
+      <rect x="560" y="30" width="220" height="70" rx="12" fill="#f8f1dc" stroke="#8a5a10"/>
+      <text x="670" y="60" text-anchor="middle">Order + contract</text>
+      <text x="670" y="80" text-anchor="middle" font-size="12" fill="#5c6570">created by Shopify</text>
+      <rect x="830" y="30" width="190" height="70" rx="12" fill="#f7f4ee" stroke="#1c2430"/>
+      <text x="925" y="60" text-anchor="middle">Webhooks</text>
+      <text x="925" y="80" text-anchor="middle" font-size="12" fill="#5c6570">orders, refunds</text>
+      <path d="M220 65 H280 M500 65 H560 M780 65 H830" stroke="#1c2430" stroke-width="1.5" marker-end="url(#arrow)"/>
+      <rect x="40" y="180" width="280" height="120" rx="12" fill="#e7f3ec" stroke="#1b6b43"/>
+      <text x="180" y="210" text-anchor="middle">Subscription app</text>
+      <text x="180" y="234" text-anchor="middle" font-size="12" fill="#5c6570">plans, contracts, dunning</text>
+      <text x="180" y="254" text-anchor="middle" font-size="12" fill="#5c6570">pause, skip, swap, portal</text>
+      <text x="180" y="274" text-anchor="middle" font-size="12" fill="#5c6570">billing-attempt scheduler</text>
+      <rect x="380" y="180" width="280" height="120" rx="12" fill="#e8f1f8" stroke="#1d4e7a"/>
+      <text x="520" y="210" text-anchor="middle">Loyalty app</text>
+      <text x="520" y="234" text-anchor="middle" font-size="12" fill="#5c6570">ledger, tiers, expiry</text>
+      <text x="520" y="254" text-anchor="middle" font-size="12" fill="#5c6570">metafield balance</text>
+      <text x="520" y="274" text-anchor="middle" font-size="12" fill="#5c6570">discount code or Function</text>
+      <rect x="720" y="180" width="280" height="120" rx="12" fill="#f8ece9" stroke="#8d3b32"/>
+      <text x="860" y="210" text-anchor="middle">Customer account</text>
+      <text x="860" y="234" text-anchor="middle" font-size="12" fill="#5c6570">manage subscriptions</text>
+      <text x="860" y="254" text-anchor="middle" font-size="12" fill="#5c6570">points and referrals</text>
+      <text x="860" y="274" text-anchor="middle" font-size="12" fill="#5c6570">payment method update</text>
+      <rect x="280" y="370" width="460" height="110" rx="12" fill="#f7f4ee" stroke="#1c2430"/>
+      <text x="510" y="405" text-anchor="middle">Renewal</text>
+      <text x="510" y="430" text-anchor="middle" font-size="13">Authorize.net: billing attempt, then a paid order</text>
+      <text x="510" y="452" text-anchor="middle" font-size="13">That order carries shipping, tax, discount, and webhooks</text>
+    </g>
+    <defs>
+      <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+        <path d="M0,0 L6,3 L0,6 Z" fill="#1c2430"/>
+      </marker>
+    </defs>
+  </svg>
+
+  <h3>Scenarios</h3>
+  <div class="grid-2">
+    <div class="card">
+      <h4>One-time purchase</h4>
+      <p>The cart line has no selling plan. Checkout is Shopify’s. Loyalty points are awarded on <code>orders/paid</code>. No contract is created. A refund reverses the points.</p>
+    </div>
+    <div class="card">
+      <h4>Subscription purchase</h4>
+      <p>The line has a selling plan. Checkout vaults the card and Shopify creates the contract. Loyalty awards points on the first order under its own rule. The selling-plan discount stays in the contract price. A one-time loyalty code does not get copied onto the contract.</p>
+    </div>
+    <div class="card">
+      <h4>Mixed cart</h4>
+      <p>Some lines are one-time and some are subscriptions. Shopify checkout can take both in one order. The contract covers only the subscription lines. The loyalty rule for the paid amount must be written and tested so the same dollars are not counted twice.</p>
+    </div>
+    <div class="card">
+      <h4>Points redemption</h4>
+      <p>On Advanced, apply a code on the cart. A Discount Function in a single-store custom app needs Plus. If the code is combinable, it can sit beside the merchant’s automatic discount. Shopify’s discount classes decide the combination. Unlimited stacking is not a promise. Before launch, test four combinations: plan discount, loyalty, automatic discount, and gift card.</p>
+    </div>
+    <div class="card">
+      <h4>Recurring order</h4>
+      <p>The app sends a billing attempt. Shopify creates the order and charges Authorize.net. The loyalty webhook runs again. The earn rule must say whether points apply to the first order only or to every renewal. A failure starts dunning. A 3-D Secure challenge sends the customer to the challenge URL.</p>
+    </div>
+    <div class="card">
+      <h4>Refund and failed payment</h4>
+      <p>Refund: inventory follows Shopify’s restock flag. Loyalty reverses the matching points. The subscription contract stays active unless a business rule says to cancel it. A failed renewal keeps the contract active, retries the Authorize.net charge, and finally asks the customer to update the card. Shopify’s third-party transaction fee is not returned on a refund.</p>
+    </div>
+  </div>
+</section>
+
+<section id="plans">
+  <h2>8. Plans and restrictions</h2>
+  <p><span class="tag fact">Fact</span> Clinical Supply Company’s Plan page shows Advanced at $399 USD per month, 15 staff members, a Shopify Shipping discount up to 87%, and local storefronts by market. The public pricing card showed Advanced at $299. Use $399. The comparison below is here so a Plus-only feature is visible before it enters scope. On October 27, 2026, <a href="https://www.shopify.com/pricing">shopify.com/pricing</a> lists Basic from $29/mo and Grow from $79/mo. Advanced includes live third-party shipping rates and checkout tailored by market.</p>
+  <p><span class="tag fact">Fact</span> Plus is not this shop’s plan. Its published starting fees are $2,300 per month on a 3-year term, and $2,500 per month on a 1-year term. More complex or higher-revenue businesses may pay a variable platform fee. Moving to Plus is a separate commercial decision. It is not required for subscriptions or loyalty here. Completing Shopify Payments is also a separate decision: the button in admin still says “Complete setup.”</p>
+  <div class="scroll">
+  <table>
+    <thead>
+      <tr><th>Checkout capability</th><th>Basic</th><th>Grow</th><th>Advanced, this store</th><th>Plus</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Hosted Shopify Checkout</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td>Checkout editor: logo, colors, font, background</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td>Thank-you and order-status apps</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td>Customer account UI extensions</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td>Web pixels</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td>Shopify Functions in a public app</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+      <tr><td>Shopify Functions in a custom app</td><td>No</td><td>No</td><td>No</td><td>Yes</td></tr>
+      <tr><td>App UI on information, shipping, and payment</td><td>No</td><td>No</td><td>No</td><td>Yes</td></tr>
+      <tr><td>Checkout Branding API</td><td>No</td><td>No</td><td>No</td><td>Yes</td></tr>
+      <tr><td>Market-specific checkout overrides</td><td>No</td><td>No</td><td>Yes, per developer docs</td><td>Yes</td></tr>
+      <tr><td>Post-purchase extension</td><td>After access</td><td>After access</td><td>After access</td><td>After access</td></tr>
+      <tr><td>Carrier-calculated shipping</td><td>Not included</td><td>Extra fee, or included on annual billing</td><td>Included</td><td>Included</td></tr>
+      <tr><td>Third-party fee paid to Shopify</td><td>2% on the public page</td><td>1% on the public page</td><td>0.5% in this shop’s Payments screen. The public page lists 0.6%</td><td>0.20% on the Plus pricing page</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>The help center compares “Basic plan or higher” with Plus. Grow and Advanced do not receive app UI on the information, shipping, and payment steps. Advanced does receive market-specific checkout and carrier-calculated shipping. In-checkout app UI is not documented on this plan.</p>
+  <p><span class="tag fact">Fact</span> Clinical Supply Company uses Authorize.net, and the Payments screen shows Shopify’s fee at 0.5%. The fee is calculated on products minus discounts, plus tax and shipping, and it is in addition to Authorize.net’s own card rate. Shopify does not return the fee on a refund. The 2.5% + $0.30 online rate on the plan card belongs to Shopify Payments, which is not active.</p>
+  <p class="src">Sources: <a href="https://www.shopify.com/pricing">Pricing, 2%, 1%, and 0.6%</a>, <a href="https://www.shopify.com/plus/pricing">Plus pricing, US starting fee and 0.20%</a>, <a href="https://help.shopify.com/en/manual/intro-to-shopify/pricing-plans/plans-features/shopify-advanced-plan">Advanced plan</a>, <a href="https://help.shopify.com/en/manual/fulfillment/setup/shipping-rates/third-party-carrier-calculated-shipping/carrier-accounts">Carrier-calculated shipping by plan</a>, <a href="https://help.shopify.com/en/manual/checkout-settings/customize-checkout-configurations">Checkout editor table</a>, <a href="https://help.shopify.com/en/manual/checkout-settings/customize-checkout-configurations/checkout-apps">Checkout apps table</a>, <a href="https://shopify.dev/docs/apps/build/checkout/technologies">Market overrides</a>.</p>
+</section>
+
+<section id="cost">
+  <h2>9. Development cost and timeline</h2>
+  <div class="card warn">
+    <p><span class="tag assume">Estimate</span> These figures are not a quotation. The store’s Shopify fees are in USD. The build range uses a blended delivery rate of ₹2,500 per hour, about $30 per hour at an illustrative ₹84 = $1. One brand, one storefront, no App Store polish, 2026. Authorize.net is already the chosen gateway. ERP and warehouse work are outside this estimate. US sales tax, shipping rates, and discounts are native checkout, so their hours are not in the app estimate.</p>
+  </div>
+  <div class="scroll">
+  <table>
+    <thead>
+      <tr><th></th><th>A. Native + apps, without Plus checkout UI</th><th>B. Native + extensibility + apps</th><th>C. Headless + custom checkout</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Fits</td><td>This store. It is on Advanced</td><td>Only if the store later moves to Plus</td><td>Not recommended</td></tr>
+      <tr><td>Hours</td><td>650–1,050</td><td>850–1,350</td><td>1,800–3,500</td></tr>
+      <tr><td>Calendar</td><td>4–7 months, two developers</td><td>5–8 months, two developers</td><td>9–16 months, a larger team</td></tr>
+      <tr><td>Initial build, illustrative</td><td>$19,500 – $31,500</td><td>$25,500 – $40,500</td><td>$54,000 – $105,000</td></tr>
+      <tr><td>Yearly maintenance</td><td>About 20% of the build</td><td>About 20% of the build, including API upgrades</td><td>35–50% of the build, including PCI and gateway changes</td></tr>
+      <tr><td>Platform fees, separate</td><td>Advanced at $399 USD per month, Authorize.net’s card rate, and Shopify’s 0.5% fee</td><td>Plus starting fee $2,300 or $2,500 per month, by term, which would replace the 0.5% fee with 0.20%. Authorize.net’s card rate is extra</td><td>A Shopify plan still applies, plus separate hosting</td></tr>
+      <tr><td>Technical complexity</td><td>Medium, once the gateway proof passes</td><td>Medium to high. Functions and extension targets</td><td>Very high. Payment, tax, fraud, and vaulting</td></tr>
+      <tr><td>Included</td><td>Selling plans, contracts, Authorize.net billing attempts, portal, loyalty ledger, cart redemption, refund reversal</td><td>Everything in A, plus checkout blocks, the Branding API, and a Discount Function</td><td>Storefront, a checkout clone, the gateway, and the apps. The subscription vault can still be missing</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <h3>Where the hours go</h3>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Work</th><th>Hours, estimate</th><th>Approach</th></tr></thead>
+    <tbody>
+      <tr><td>Phase 0: gateway eligibility, API access request, dev-store proof</td><td>40–80</td><td>A and B. Also required for C, and often where C stops</td></tr>
+      <tr><td>Theme: selling-plan picker and loyalty cart widget</td><td>80–140</td><td>A and B</td></tr>
+      <tr><td>Subscription admin, contracts, scheduler, dunning, webhooks</td><td>250–400</td><td>A and B</td></tr>
+      <tr><td>Customer portal</td><td>80–140</td><td>A and B</td></tr>
+      <tr><td>Loyalty ledger, tiers, expiry, refunds</td><td>120–200</td><td>A and B</td></tr>
+      <tr><td>Redeem with discount codes</td><td>80–120</td><td>A. Also the fallback in B until a Function exists</td></tr>
+      <tr><td>Checkout UI extensions and branding</td><td>80–160</td><td>B only</td></tr>
+      <tr><td>Discount Function and combination tests</td><td>60–120</td><td>B, or A if the app is public</td></tr>
+      <tr><td>QA: mixed cart, failed payment, partial refund</td><td>80–140</td><td>A and B</td></tr>
+      <tr><td>Custom checkout parity: tax, shipping, discounts, 3-D Secure, gift cards</td><td>800–1,500</td><td>C only</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>Clinical Supply Company is already on Advanced at $399 USD per month, so the build to price is Approach A. The Plus platform fee can be larger than the extra development in B. The published 1-year starting fee is $2,500 per month, which is $30,000 per year. The 3-year term starts at $2,300 per month. That purchase would also change Shopify’s third-party fee from the 0.5% on this Payments screen to 0.20%. Authorize.net’s card rate remains. If the only reason to buy Plus is a points box inside checkout, stay on Advanced and redeem on the cart.</p>
+</section>
+
+<section id="score">
+  <h2>10. Final recommendation</h2>
+  <div class="scroll">
+  <table>
+    <thead>
+      <tr><th>Criterion</th><th>A. Native + apps</th><th>B. Native + extensibility + apps</th><th>C. Headless + custom checkout</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Checkout UI flexibility</td><td class="score">4</td><td class="score">7</td><td class="score">9</td></tr>
+      <tr><td>Cost (higher is cheaper)</td><td class="score">8</td><td class="score">6</td><td class="score">2</td></tr>
+      <tr><td>Security</td><td class="score">9</td><td class="score">9</td><td class="score">3</td></tr>
+      <tr><td>Maintenance (higher is easier)</td><td class="score">8</td><td class="score">8</td><td class="score">2</td></tr>
+      <tr><td>Subscription compatibility</td><td class="score">9</td><td class="score">9</td><td class="score">3</td></tr>
+      <tr><td>Loyalty integration</td><td class="score">7</td><td class="score">9</td><td class="score">5</td></tr>
+      <tr><td>Scalability</td><td class="score">8</td><td class="score">9</td><td class="score">4</td></tr>
+      <tr><td>Risk that a later feature gets stuck (higher means lower risk)</td><td class="score">9</td><td class="score">9</td><td class="score">2</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="card good">
+    <h3>Decision</h3>
+    <p>Customize Shopify checkout. Do not replace it. Clinical Supply Company is on Advanced with Authorize.net already active, so the decision is Approach A.</p>
+    <p>Subscriptions and loyalty are built on native checkout. Approach B is the same build plus checkout-step apps, and those apps need Plus. B can be added later if the store upgrades. It is not the current scope. Starting with C means bringing subscriptions back onto Shopify checkout later.</p>
+  </div>
+  <h3>Still out of scope after this decision</h3>
+  <ul>
+    <li>A pixel-perfect clone of Shopify’s payment form.</li>
+    <li>Removing checkout steps, or moving the order summary to an arbitrary position.</li>
+    <li>Shop Pay, Apple Pay, or Google Pay on Authorize.net subscription sales. The documented wallet is PayPal.</li>
+    <li>Assuming a live UPS, USPS, or FedEx quote appears before that carrier account is connected. The Advanced plan already includes the feature. Flat rates do not need a carrier account.</li>
+    <li>One subscription contract made from a bundle of different products.</li>
+    <li>Editing a subscription order with the Order Edits API.</li>
+    <li>Paying every renewal with a gift card.</li>
+    <li>A loyalty box on the payment step. Advanced does not include it. That box lives on the cart and in the account.</li>
+    <li>Discount Functions in a single-store custom app. Advanced does not include them. The working path is a discount code.</li>
+    <li>A live post-purchase subscription upsell, until Shopify grants access. Adding a subscription to an order that already has one is documented as not allowed.</li>
+  </ul>
+  <h3>In scope on this decision</h3>
+  <ul>
+    <li>Shopify shipping, US sales tax, and discounts on both one-time and subscription checkout. Authorize.net charges the final total. Carrier-calculated rates are available on this Advanced plan after the carrier account is connected.</li>
+    <li>Subscription purchase, contract, portal, pause, cancel, skip, reschedule, and product swap.</li>
+    <li>Recurring card charges through Authorize.net, after Phase 0 shows a contract and a payment method.</li>
+    <li>Loyalty earn, expiry, tiers, referral, and refund reversal.</li>
+    <li>Loyalty redemption on the cart with a discount code. The same metafield balance can drive a checkout block and a Function later, if the store moves to Plus.</li>
+    <li>Points on renewal orders, because those orders are real Shopify orders.</li>
+  </ul>
+</section>
+
+<section id="roadmap">
+  <h2>Implementation roadmap</h2>
+  <ol class="steps">
+    <li><strong>Phase 0, 2–4 weeks.</strong> Dev Dashboard app. Subscription API access request. Authorize.net test mode. <code>eligibleForSubscriptions</code>. One small USD order with a contract, a vaulted payment method, a shipping line in pounds, a tax line, and a discount. Ship one test to Fairfield, Ohio and one to another taxable state, so both tax results are visible. The Shopify fee on the paid order should match the 0.5% on the Payments screen.</li>
+    <li><strong>Phase 1, 2–3 weeks.</strong> Advanced checkout editor: logo, colors, font, and background. Put the subscription picker and loyalty widget on the product page and cart. Add the thank-you pixel. Do not schedule the Checkout Branding API on this plan.</li>
+    <li><strong>Phase 2, 8–12 weeks.</strong> Subscription MVP: plans, theme picker, contract webhooks, Authorize.net billing attempts, dunning, card-update flow, admin, and the customer-account portal.</li>
+    <li><strong>Phase 3, 6–10 weeks.</strong> Loyalty MVP: ledger, metafield, cart redemption with a discount code, earn, refund reversal, and tiers.</li>
+    <li><strong>Phase 4, 3–4 weeks.</strong> Combined tests: mixed cart, plan discount plus loyalty code, failed payment, partial refund, skip, and swap.</li>
+    <li><strong>Phase 5, only if the store later moves to Plus.</strong> Checkout blocks and a Discount Function. Keep the cart discount code as the Advanced path.</li>
+  </ol>
+  <p>Starting Phase 2 before Phase 0 is how a subscription project later discovers that renewals cannot be charged. After the gateway proof, the remaining features stay on this roadmap.</p>
+</section>
+
+<section id="risks">
+  <h2>Risk analysis</h2>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>Risk</th><th>Likelihood</th><th>Impact</th><th>Prevention</th></tr></thead>
+    <tbody>
+      <tr><td>The Authorize.net test does not create a contract</td><td>Low. The gateway is on the supported list</td><td>Renewals stop</td><td>The small Phase 0 order. Do not build billing until <code>eligibleForSubscriptions</code> is true</td></tr>
+      <tr><td>Assuming the first shipment’s express rate repeats forever</td><td>Medium, if it is not written into scope</td><td>Wrong shipping charge</td><td>Recurring shipments use the least expensive method unless a shipping profile changes that. Show this to the client in Phase 0</td></tr>
+      <tr><td>A charge fails when the card expires</td><td>Medium. Auto-updater is less clearly documented on Authorize.net than on Shopify Payments</td><td>Dunning and churn</td><td>Card update in the customer account. Confirm account updater with the gateway</td></tr>
+      <tr><td>Subscription API access is slow</td><td>Medium</td><td>The timeline moves</td><td>Request it on day one. Selling-plan UX can be designed before access. Billing cannot</td></tr>
+      <tr><td>Discount stacking behaves unexpectedly</td><td>Medium</td><td>Wrong price, or a double discount</td><td>Four combination tests. Do not write a one-time loyalty code onto the contract</td></tr>
+      <tr><td>Expecting a payment-step app on Advanced</td><td>Certain if that block is written into scope</td><td>A late redesign</td><td>Loyalty UI starts on the cart and the account. Plus is a later upgrade, not this build</td></tr>
+      <tr><td>A custom-app Function does not run on Advanced</td><td>Certain for a single-store custom app</td><td>Redemption breaks if only a Function was built</td><td>Implement the discount code first. A public Function app is a different distribution choice</td></tr>
+      <tr><td>A Function calls a live API</td><td>If the team assumes network access</td><td>The discount is zero, or the function times out</td><td>Balance in a metafield. Treat function network access as an enterprise feature</td></tr>
+      <tr><td>Treating post-purchase upsell as a launch feature</td><td>Medium</td><td>The feature drops if access is not granted</td><td>Keep it optional, after Phase 5</td></tr>
+      <tr><td>Choosing a custom checkout under UI pressure</td><td>If the visual ask dominates</td><td>PCI, terms, the subscription vault, and years of maintenance</td><td>This report’s decision: customize, do not replace</td></tr>
+      <tr><td>Selling bundle subscriptions</td><td>Low, if a sales deck gets ahead of the docs</td><td>The contract will not be created as promised</td><td>Out of scope. One variant, one selling plan</td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section id="sources">
+  <h2>Sources</h2>
+  <p>These pages were read during research on October 27, 2026. Shopify’s docs change. Open the same pages again in the sprint that starts the build.</p>
+  <ul>
+    <li><a href="https://www.shopify.com/legal/terms">Shopify Terms of Service</a> — Shopify Checkout for online-store sales.</li>
+    <li>Clinical Supply Company admin, October 27, 2026 — Advanced at $399 USD/month. Authorize.net at 0.5%, with card rates set by Authorize.net. Shopify Payments not set up. Fairfield, Ohio. USD, pounds, Eastern Time.</li>
+    <li><a href="https://www.shopify.com/pricing">Shopify pricing</a> — public Advanced card at $299, and 0.6% for third-party providers. This shop’s admin is the budget figure: $399 and 0.5%.</li>
+    <li><a href="https://help.shopify.com/en/manual/intro-to-shopify/pricing-plans/plans-features/shopify-advanced-plan">Advanced plan</a> — carrier-calculated shipping and market-specific checkout.</li>
+    <li><a href="https://help.shopify.com/en/manual/fulfillment/setup/shipping-rates/third-party-carrier-calculated-shipping/carrier-accounts">Carrier-calculated shipping</a> — included on Advanced. UPS, USPS, and FedEx.</li>
+    <li><a href="https://www.shopify.com/plus/pricing">Shopify Plus pricing</a> — US starting fee. 0.20% with a third-party processor.</li>
+    <li><a href="https://help.shopify.com/en/manual/products/purchase-options/subscriptions/considerations">Subscription products</a> — Authorize.net, shipping, discounts, gift cards, draft orders.</li>
+    <li><a href="https://help.shopify.com/en/manual/your-account/manage-billing/billing-charges/types-of-charges/third-party-charges/third-party-transaction-fees">Third-party transaction fees</a> — the formula includes discounts, tax, and shipping.</li>
+    <li><a href="https://help.shopify.com/en/manual/payments/accelerated-checkouts/apple-pay">Apple Pay for subscriptions</a> — requires Shopify Payments.</li>
+    <li><a href="https://help.shopify.com/en/manual/checkout-settings/customize-checkout-configurations">Checkout and accounts editor</a>.</li>
+    <li><a href="https://help.shopify.com/en/manual/checkout-settings/customize-checkout-configurations/checkout-apps">Checkout apps by plan</a>.</li>
+    <li><a href="https://shopify.dev/docs/apps/build/checkout/technologies">Technologies for customizing checkout</a>.</li>
+    <li><a href="https://shopify.dev/docs/api/checkout-extensions">Checkout app extensions</a>.</li>
+    <li><a href="https://shopify.dev/docs/api/checkout-ui-extensions/latest">Checkout UI extensions</a>.</li>
+    <li><a href="https://shopify.dev/docs/api/checkout-ui-extensions/latest/web-components">Web components constraints</a>.</li>
+    <li><a href="https://shopify.dev/docs/api/functions/latest">Function APIs availability</a>.</li>
+    <li><a href="https://shopify.dev/docs/apps/build/functions/network-access">Function network access</a>.</li>
+    <li><a href="https://shopify.dev/docs/apps/build/checkout/capabilities">Checkout extension capabilities</a>.</li>
+    <li><a href="https://www.shopify.com/partners/blog/checkout-compliance">Checkout sandbox and PCI</a>.</li>
+    <li><a href="https://www.shopify.com/enterprise/blog/checkout-extensibility-winter-editions">Checkout extensibility and Shop Pay</a>.</li>
+    <li><a href="https://shopify.dev/docs/storefronts/themes/architecture/layouts/checkout-liquid/index">checkout.liquid deprecation</a>.</li>
+    <li><a href="https://shopify.dev/changelog/shopify-scripts-will-be-deprecated-on-june-30-2026">Shopify Scripts sunset</a>.</li>
+    <li><a href="https://github.com/Shopify/storefront-api-feedback/discussions/225">Checkout API to Cart API</a>.</li>
+    <li><a href="https://shopify.dev/docs/apps/build/purchase-options/subscriptions/model-subscriptions-solution">Subscription lifecycle</a>.</li>
+    <li><a href="https://shopify.dev/docs/apps/build/purchase-options/subscriptions/selling-plans/build-a-selling-plan">Selling plans</a>.</li>
+    <li><a href="https://shopify.dev/docs/apps/build/purchase-options/subscriptions/contracts/build-a-subscription-contract">Subscription contracts and billing attempts</a>.</li>
+    <li><a href="https://shopify.dev/docs/apps/build/purchase-options/subscriptions/migrate-to-subscriptions-api">eligibleForSubscriptions</a>.</li>
+    <li><a href="https://shopify.dev/docs/api/admin-graphql/2026-10/objects/ShopFeatures">ShopFeatures</a>.</li>
+    <li><a href="https://shopify.dev/docs/apps/build/checkout/product-offers/create-a-post-purchase-subscription">Post-purchase subscription limits</a>.</li>
+  </ul>
+</section>
+
+</main>
+</div>
+<footer class="note wrap">
+  Clinical Supply Company · October 27, 2026 · Fairfield, Ohio · Advanced at $399 USD/month · Authorize.net at 0.5%. Shopify Payments is not set up. Shipping, US sales tax, and discounts stay on native checkout. The build is Approach A. Illustrative build dollars use $30 per hour and are not a quote.
+</footer>
+</body>
+</html>
